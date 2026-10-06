@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PR #{{NUMBER}}: {{SHORT TITLE}}</title>
+<!--
+  PR Explainer template.
+  - Replace every {{PLACEHOLDER}}.
+  - Delete sections that don't apply AND their TOC links.
+  - Only use the CSS variables below for color, so light and dark both work.
+  - Everything is self-contained: no external requests.
+-->
+<style>
+:root {
+  --bg: #fbfaf8; --surface: #ffffff; --surface-2: #f3f1ec; --text: #1d1c1a;
+  --muted: #6b6760; --border: #e3dfd6; --accent: #3b5bdb; --accent-soft: #e7ecfd;
+  --good: #1f7a4d; --good-soft: #e3f4ea; --bad: #b3261e; --bad-soft: #fbe7e5;
+  --warn: #9a6200; --warn-soft: #fdf1dc; --info: #2c6fae; --info-soft: #e2eef9;
+  --code-bg: #f5f3ef;
+  --e-props: #3b5bdb; --e-callback: #c2410c; --e-context: #7c3aed;
+  --e-store: #0f766e; --e-fetch: #be185d; --e-url: #4d7c0f;
+  --radius: 10px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --surface: #1f1f1c; --surface-2: #262622; --text: #ecebe7;
+    --muted: #a09c93; --border: #34332e; --accent: #8ea4ff; --accent-soft: #232a45;
+    --good: #5cc98f; --good-soft: #17301f; --bad: #ff8a80; --bad-soft: #3a1d1b;
+    --warn: #f0b95c; --warn-soft: #3a2c12; --info: #7db8f0; --info-soft: #172a3d;
+    --code-bg: #1a1a18;
+    --e-props: #8ea4ff; --e-callback: #fb923c; --e-context: #c4a3ff;
+    --e-store: #5eead4; --e-fetch: #f472b6; --e-url: #a3e635;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614; --surface: #1f1f1c; --surface-2: #262622; --text: #ecebe7;
+  --muted: #a09c93; --border: #34332e; --accent: #8ea4ff; --accent-soft: #232a45;
+  --good: #5cc98f; --good-soft: #17301f; --bad: #ff8a80; --bad-soft: #3a1d1b;
+  --warn: #f0b95c; --warn-soft: #3a2c12; --info: #7db8f0; --info-soft: #172a3d;
+  --code-bg: #1a1a18;
+  --e-props: #8ea4ff; --e-callback: #fb923c; --e-context: #c4a3ff;
+  --e-store: #5eead4; --e-fetch: #f472b6; --e-url: #a3e635;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 var(--font); }
+main { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 8px; }
+h2 { font-size: 1.35rem; margin: 56px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+h3 { font-size: 1.08rem; margin: 28px 0 8px; }
+a { color: var(--accent); }
+p, li { max-width: 72ch; }
+.meta { color: var(--muted); font-size: .92rem; }
+code { font-family: var(--mono); font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { font-family: var(--mono); font-size: .84rem; line-height: 1.5; background: var(--code-bg);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px;
+  overflow-x: auto; white-space: pre; margin: 12px 0; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.file-label { font-family: var(--mono); font-size: .78rem; color: var(--muted); margin: 16px 0 -8px; }
+.add { background: var(--good-soft); display: inline-block; width: 100%; }
+.del { background: var(--bad-soft); display: inline-block; width: 100%; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 12px 0; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+tr.diverge td { background: var(--warn-soft); }
+details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin: 12px 0; }
+summary { cursor: pointer; font-weight: 600; }
+
+/* TOC + stats */
+nav.toc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin: 24px 0; }
+nav.toc ol { margin: 6px 0 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+@media (max-width: 600px) { nav.toc ol { columns: 1; } }
+.stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px; }
+.stat b { display: block; font-size: 1.1rem; }
+.stat span { color: var(--muted); font-size: .8rem; }
+
+/* Badges & callouts */
+.badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; vertical-align: middle; letter-spacing: .02em; }
+.b-changed { background: var(--warn-soft); color: var(--warn); }
+.b-new { background: var(--good-soft); color: var(--good); }
+.b-removed { background: var(--bad-soft); color: var(--bad); }
+.b-server { background: var(--surface-2); color: var(--muted); }
+.b-client { background: var(--info-soft); color: var(--info); }
+.callout { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin: 16px 0; }
+.callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+.callout.bad { border-color: var(--bad); background: var(--bad-soft); }
+.callout.good { border-color: var(--good); background: var(--good-soft); }
+.callout > :first-child { margin-top: 0; } .callout > :last-child { margin-bottom: 0; }
+
+/* Before / after */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+@media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+.compare > div { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; background: var(--surface); min-width: 0; }
+.compare .bad { border-top: 4px solid var(--bad); }
+.compare .good { border-top: 4px solid var(--good); }
+.compare h4 { margin: 0 0 6px; font-size: .9rem; }
+ol.steps li { margin: 4px 0; }
+
+/* Component tree */
+.tree-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 16px 0; }
+.tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+.tree ul { margin-left: 22px; padding-left: 18px; border-left: 2px solid var(--border); }
+.tree li { position: relative; padding: 6px 0 6px 0; max-width: none; }
+.tree ul > li::before { content: ""; position: absolute; left: -18px; top: 26px; width: 16px; border-top: 2px solid var(--border); }
+.node { display: inline-block; min-width: 240px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+.node.changed { border-color: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
+.node.new { border-color: var(--good); box-shadow: 0 0 0 1px var(--good); }
+.node.removed { opacity: .6; border-style: dashed; }
+.node .name { font-weight: 700; font-family: var(--mono); font-size: .9rem; }
+.node .path { display: block; font-family: var(--mono); font-size: .72rem; color: var(--muted); }
+.edge { display: inline-block; font-family: var(--mono); font-size: .72rem; margin: 4px 4px 0 0; padding: 1px 7px; border-radius: 5px; border: 1px solid currentColor; }
+.edge-props { color: var(--e-props); } .edge-callback { color: var(--e-callback); }
+.edge-context { color: var(--e-context); } .edge-store { color: var(--e-store); }
+.edge-fetch { color: var(--e-fetch); } .edge-url { color: var(--e-url); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted); margin: 8px 0; }
+
+/* Review */
+.verdict { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius); margin: 12px 0; font-weight: 700; }
+.verdict.approve { background: var(--good-soft); color: var(--good); }
+.verdict.comments { background: var(--warn-soft); color: var(--warn); }
+.verdict.changes { background: var(--bad-soft); color: var(--bad); }
+.finding { background: var(--surface); border: 1px solid var(--border); border-left-width: 5px; border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; }
+.finding.blocker { border-left-color: var(--bad); } .finding.major { border-left-color: var(--warn); }
+.finding.minor { border-left-color: var(--info); } .finding.nit { border-left-color: var(--border); }
+.finding header { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin-bottom: 4px; }
+.sev { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.blocker .sev { color: var(--bad); } .major .sev { color: var(--warn); } .minor .sev { color: var(--info); } .nit .sev { color: var(--muted); }
+.loc { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+.finding p { margin: 4px 0; }
+
+/* Playground */
+.pg-unit { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 20px 0; }
+.pg-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline; }
+.pg-head h3 { margin: 0; font-family: var(--mono); font-size: 1rem; }
+.pg-score { font-weight: 700; font-size: .9rem; }
+.pg-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 10px 0; }
+.pg-toggle button { border: 0; background: var(--surface-2); color: var(--text); padding: 5px 12px; font: inherit; font-size: .85rem; cursor: pointer; }
+.pg-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.pg-cases td { font-family: var(--mono); font-size: .8rem; word-break: break-word; }
+.pass { color: var(--good); font-weight: 700; } .fail { color: var(--bad); font-weight: 700; }
+.pg-try { display: grid; gap: 8px; margin-top: 14px; }
+.pg-try textarea { width: 100%; min-height: 64px; font-family: var(--mono); font-size: .85rem; background: var(--code-bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.pg-try button.run { justify-self: start; background: var(--accent); color: var(--surface); border: 0; border-radius: 8px; padding: 6px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+.pg-out { white-space: pre-wrap; margin: 0; }
+.port-note { font-size: .8rem; color: var(--warn); }
+</style>
+</head>
+<body>
+<main>
+
+<p class="meta">{{REPO}} · <a href="{{PR_URL}}">PR #{{NUMBER}}</a> · {{AUTHOR}} · {{BASE}} ← {{HEAD}}</p>
+<h1>{{Descriptive title: what this PR does, in plain words}}</h1>
+
+<div class="stats">
+  <div class="stat"><b>{{N}}</b><span>files changed</span></div>
+  <div class="stat"><b>+{{A}} / −{{D}}</b><span>lines</span></div>
+  <div class="stat"><b>{{Frontend · Backend · Full-stack}}</b><span>scope</span></div>
+  <div class="stat"><b>{{Bug fix · Feature · Refactor}}</b><span>type</span></div>
+  <div class="stat"><b>{{Verdict}}</b><span>review</span></div>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#context">Context</a></li>
+    <li><a href="#bug">Bug scenario</a></li>          <!-- bug fixes only -->
+    <li><a href="#tree">Component tree &amp; data flow</a></li> <!-- frontend only -->
+    <li><a href="#code">Code walkthrough</a></li>
+    <li><a href="#playground">Playground</a></li>     <!-- if testable logic -->
+    <li><a href="#review">Code review</a></li>
+    <li><a href="#tests">Test results</a></li>        <!-- if tests ran -->
+  </ol>
+</nav>
+
+<!-- ============ SUMMARY ============ -->
+<h2 id="summary">Summary</h2>
+<p>{{Problem → approach → blast radius, in 3–5 sentences.}}</p>
+
+<!-- ============ CONTEXT ============ -->
+<h2 id="context">Context</h2>
+<details>
+  <summary>Background for newcomers (skippable)</summary>
+  <p>{{Deeper background on this part of the system.}}</p>
+</details>
+<p>{{How it worked before this PR, and why it was shaped that way.}}</p>
+
+<!-- ============ BUG SCENARIO (bug fixes only) ============ -->
+<h2 id="bug">Bug scenario</h2>
+<h3>Symptom</h3>
+<p>{{What users saw. Quote the real error or Sentry title.}}</p>
+
+<h3>Reproduce (before the fix)</h3>
+<div class="scroll"><table>
+  <tr><th>Precondition</th><th>Value</th></tr>
+  <tr><td>{{e.g. provider timezone}}</td><td><code>{{America/Bogota}}</code></td></tr>
+</table></div>
+<ol class="steps">
+  <li>{{Step 1}}</li>
+  <li>{{Step 2}}</li>
+</ol>
+<div class="compare">
+  <div class="good"><h4>Expected</h4><p>{{…}}</p></div>
+  <div class="bad"><h4>Actual (before)</h4><p>{{…}}</p></div>
+</div>
+
+<h3>Root cause</h3>
+<p class="file-label">{{path/to/file.ts}} (before)</p>
+<pre><code>{{old code, HTML-escaped}}</code></pre>
+<p>{{Trace the concrete values through the lines above.}}</p>
+
+<h3>After the fix</h3>
+<p class="file-label">{{path/to/file.ts}} (after)</p>
+<pre><code>{{new code, HTML-escaped}}</code></pre>
+<div class="compare">
+  <div class="bad"><h4>Before</h4><p>{{…}}</p></div>
+  <div class="good"><h4>After</h4><p>{{…}}</p></div>
+</div>
+
+<h3>Scenario matrix</h3>
+<div class="scroll"><table>
+  <tr><th>Scenario</th><th>Input</th><th>Before</th><th>After</th><th>Test</th></tr>
+  <tr><td>{{original bug}}</td><td><code>{{…}}</code></td><td class="fail">{{…}} ✗</td><td class="pass">{{…}} ✓</td><td>{{test name / none}}</td></tr>
+</table></div>
+
+<!-- ============ COMPONENT TREE (frontend only) ============ -->
+<h2 id="tree">Component tree &amp; data flow</h2>
+<div class="legend">
+  <span class="edge edge-props">props</span><span class="edge edge-callback">callback ↑</span>
+  <span class="edge edge-context">context</span><span class="edge edge-store">hook / store</span>
+  <span class="edge edge-fetch">fetch</span><span class="edge edge-url">URL params</span>
+  <span><span class="badge b-changed">changed</span> <span class="badge b-new">new</span> <span class="badge b-removed">removed</span></span>
+</div>
+<div class="tree-wrap">
+<ul class="tree">
+  <li>
+    <div class="node">
+      <span class="name">{{SchedulePage}}</span> <span class="badge b-server">server</span>
+      <span class="path">{{app/schedule/page.tsx}}</span>
+      <span class="edge edge-url">{{?date=2026-09-28}}</span>
+    </div>
+    <ul>
+      <li>
+        <div class="node changed">
+          <span class="name">{{AppointmentList}}</span> <span class="badge b-changed">changed</span> <span class="badge b-client">client</span>
+          <span class="path">{{components/AppointmentList.tsx}}</span>
+          <span class="edge edge-store">{{useAppointments() → 3 items}}</span>
+        </div>
+        <ul>
+          <li>
+            <div class="node new">
+              <span class="name">{{AppointmentCard}}</span> <span class="badge b-new">new</span>
+              <span class="path">{{components/AppointmentCard.tsx}}</span>
+              <span class="edge edge-props">{{appointment={id: 812}}}</span>
+              <span class="edge edge-callback">{{onCancel(812)}}</span>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+</div>
+
+<h3>One action, end to end</h3>
+<div class="scroll"><table>
+  <tr><th>#</th><th>Where</th><th>What happens</th><th>Data</th></tr>
+  <tr><td>1</td><td><code>{{AppointmentCard}}</code></td><td>{{user clicks Cancel}}</td><td><code>{{onCancel(812)}}</code></td></tr>
+  <tr class="diverge"><td>2</td><td><code>{{…}}</code></td><td>{{the step that differs before/after}}</td><td><code>{{…}}</code></td></tr>
+</table></div>
+
+<!-- ============ CODE WALKTHROUGH ============ -->
+<h2 id="code">Code walkthrough</h2>
+<h3>{{Concept group 1: the core primitive}}</h3>
+<p>{{Why it's shaped this way.}}</p>
+<p class="file-label">{{path/to/file}}</p>
+<pre><code>{{code, HTML-escaped}}</code></pre>
+<div class="callout"><p>{{A deliberate choice a skimmer would miss.}}</p></div>
+
+<!-- ============ PLAYGROUND ============ -->
+<h2 id="playground">Playground</h2>
+<p>{{One line on what you can try here.}} Edit the JSON arguments and press <b>Run</b> to try your own inputs.</p>
+<div id="pg-root"></div>
+
+<!-- ============ REVIEW ============ -->
+<h2 id="review">Code review</h2>
+<p class="meta">Reviewed with: <b>{{mattpocock-skills:code-review | built-in checklist}}</b></p>
+<div class="verdict {{approve|comments|changes}}">{{Approve · Approve with comments · Request changes}}</div>
+<p>{{One-paragraph summary of the review.}}</p>
+
+<article class="finding {{blocker|major|minor|nit}}">
+  <header><span class="sev">{{major}}</span><strong>{{Short title}}</strong><span class="loc">{{path/to/file.ts:42}}</span></header>
+  <p>{{Finding.}}</p>
+  <p><b>Why it matters:</b> {{concrete failure}}</p>
+  <p><b>Suggestion:</b> {{fix}}</p>
+  <pre><code>{{optional snippet}}</code></pre>
+</article>
+
+<details>
+  <summary>Raw reviewer output</summary>
+  <pre>{{verbatim external review text, if any}}</pre>
+</details>
+
+<!-- ============ TEST RESULTS ============ -->
+<h2 id="tests">Test results</h2>
+<pre><code>$ {{command}}
+{{trimmed real output}}</code></pre>
+
+</main>
+
+<script>
+/* ===== Fill this in (see references/playground.md). Delete the section if not used. ===== */
+const PLAYGROUND = {
+  units: [
+    {
+      id: "example",
+      title: "{{unitName(args)}}",
+      source: "{{path/to/file.ts}}",
+      port: false,
+      before: null,                       // function (...) { old code } for bug fixes
+      after: function (a, b) { return a + b; },
+      cases: [
+        { name: "{{case name}}", input: [1, 2], expected: 3 },
+      ],
+    },
+  ],
+};
+
+/* ===== Harness: no need to edit below ===== */
+function deepEqual(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+function runFn(fn, input) {
+  try { return { ok: true, value: fn.apply(null, input) }; }
+  catch (e) { return { ok: false, value: "Error: " + (e && e.message ? e.message : e) }; }
+}
+function matches(res, expected) {
+  if (expected && typeof expected === "object" && expected.throws === true) return !res.ok;
+  return res.ok && deepEqual(res.value, expected);
+}
+function fmt(v) {
+  if (v === undefined) return "undefined";
+  if (typeof v === "string" && v.indexOf("Error: ") === 0) return v;
+  try { return JSON.stringify(v); } catch (e) { return String(v); }
+}
+function el(tag, attrs, text) {
+  const n = document.createElement(tag);
+  if (attrs) for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (text != null) n.textContent = text;
+  return n;
+}
+function renderUnit(u, root) {
+  const box = el("section", { class: "pg-unit", id: "pg-" + u.id });
+  const head = el("div", { class: "pg-head" });
+  head.appendChild(el("h3", null, u.title));
+  const score = el("span", { class: "pg-score" });
+  head.appendChild(score);
+  box.appendChild(head);
+  box.appendChild(el("div", { class: "loc" }, u.source));
+  if (u.port) box.appendChild(el("div", { class: "port-note" }, "JS port of the original. See the source in the walkthrough."));
+
+  let mode = u.before ? "both" : "after";
+  if (u.before) {
+    const tg = el("div", { class: "pg-toggle", role: "group", "aria-label": "Version" });
+    ["before", "after", "both"].forEach(function (m) {
+      const b = el("button", { type: "button", "aria-pressed": String(m === mode) }, m[0].toUpperCase() + m.slice(1));
+      b.addEventListener("click", function () {
+        mode = m;
+        tg.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+        draw();
+      });
+      tg.appendChild(b);
+    });
+    box.appendChild(tg);
+  }
+
+  const wrap = el("div", { class: "scroll" });
+  const table = el("table", { class: "pg-cases" });
+  wrap.appendChild(table);
+  box.appendChild(wrap);
+
+  function draw() {
+    table.innerHTML = "";
+    const cols = ["Case", "Input", "Expected"];
+    if (mode !== "after") cols.push("Before");
+    if (mode !== "before") cols.push("After");
+    const tr = el("tr");
+    cols.forEach(function (c) { tr.appendChild(el("th", null, c)); });
+    table.appendChild(tr);
+    let pass = 0, total = 0;
+    u.cases.forEach(function (c) {
+      const r = el("tr");
+      r.appendChild(el("td", null, c.name));
+      r.appendChild(el("td", null, fmt(c.input)));
+      r.appendChild(el("td", null, fmt(c.expected)));
+      ["before", "after"].forEach(function (v) {
+        if ((v === "before" && mode === "after") || (v === "after" && mode === "before")) return;
+        const res = runFn(u[v], c.input);
+        const ok = matches(res, c.expected);
+        if (v === (mode === "before" ? "before" : "after")) { total++; if (ok) pass++; }
+        const td = el("td");
+        td.appendChild(el("span", { class: ok ? "pass" : "fail" }, ok ? "✓ " : "✗ "));
+        td.appendChild(document.createTextNode(fmt(res.value)));
+        r.appendChild(td);
+      });
+      table.appendChild(r);
+    });
+    const label = mode === "before" ? "before" : "after";
+    score.textContent = pass + "/" + total + " passing (" + label + ")";
+    score.className = "pg-score " + (pass === total ? "pass" : "fail");
+  }
+  draw();
+
+  const tryBox = el("div", { class: "pg-try" });
+  tryBox.appendChild(el("label", { for: "pg-in-" + u.id }, "Try your own arguments (JSON array):"));
+  const ta = el("textarea", { id: "pg-in-" + u.id, spellcheck: "false" });
+  ta.value = JSON.stringify(u.cases.length ? u.cases[0].input : []);
+  tryBox.appendChild(ta);
+  const btn = el("button", { type: "button", class: "run" }, "Run");
+  const out = el("pre", { class: "pg-out", "aria-live": "polite" });
+  btn.addEventListener("click", function () {
+    let args;
+    try { args = JSON.parse(ta.value); if (!Array.isArray(args)) args = [args]; }
+    catch (e) { out.textContent = "Invalid JSON: " + e.message; return; }
+    const lines = [];
+    if (u.before) lines.push("before → " + fmt(runFn(u.before, args).value));
+    lines.push((u.before ? "after  → " : "→ ") + fmt(runFn(u.after, args).value));
+    out.textContent = lines.join("\n");
+  });
+  tryBox.appendChild(btn);
+  tryBox.appendChild(out);
+  box.appendChild(tryBox);
+  root.appendChild(box);
+}
+(function () {
+  const root = document.getElementById("pg-root");
+  if (!root || !PLAYGROUND.units.length) return;
+  PLAYGROUND.units.forEach(function (u) { renderUnit(u, root); });
+})();
+</script>
+</body>
+</html>
