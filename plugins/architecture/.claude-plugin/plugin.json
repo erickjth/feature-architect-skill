@@ -1,5 +1,0 @@
-{
-  "name": "architecture",
-  "description": "Plan, build and review features with Clean Architecture, Hexagonal ports/adapters and right-sized decomposition",
-  "version": "1.0.0"
-}

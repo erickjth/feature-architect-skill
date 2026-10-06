@@ -1,19 +1,26 @@
 # team-tools marketplace
 
+One plugin, `erickjth`, holds all skills. Each skill is invoked as `/erickjth:<skill-name>`.
+
+## Skills
+- `/erickjth:feature-architect` - plan, build and review a feature
+
 ## Install (local)
 ```
 /plugin marketplace add ./feature-architect-marketplace
-/plugin install architecture@team-tools
+/plugin install erickjth@team-tools
 /reload-plugins
 ```
-Then run `/architecture:feature-architect` or just ask Claude to plan a feature.
 
 ## Install (from git)
-Push this folder to a repo, then:
 ```
 /plugin marketplace add <owner>/<repo>
-/plugin install architecture@team-tools
+/plugin install erickjth@team-tools
 ```
 
+## Add a new skill
+Create `plugins/erickjth/skills/<new-skill>/SKILL.md` (frontmatter `name` + `description`), bump `version` in
+`plugins/erickjth/.claude-plugin/plugin.json`, then `/reload-plugins`. No other file needs to change.
+
 ## Dev loop
-`claude --plugin-dir ./plugins/architecture`, edit, then `/reload-plugins`.
+`claude --plugin-dir ./plugins/erickjth`, edit, then `/reload-plugins`.
