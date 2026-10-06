@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{FEATURE}} - Architecture Plan</title>
+<!--
+ARCHITECT INSTRUCTIONS (delete this comment when filling in):
+- Replace every {{PLACEHOLDER}}. Delete rows/sections that the size (S/M/L) omits, but keep the 7 headings.
+- Diagrams: <pre class="mermaid">...</pre> + <p class="cap">one-line caption</p>. Snippets: references/diagrams.md
+- Tables over prose. Max 2 sentences per paragraph.
+- Published artifacts render Mermaid natively. If the file is opened standalone, add before </body>:
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true});</script>
+-->
+<style>
+:root{--bg:#fff;--fg:#1f2937;--mut:#6b7280;--line:#e5e7eb;--card:#f9fafb;--acc:#2563eb;--ok:#059669;--warn:#d97706;--crit:#dc2626;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f172a;--fg:#e5e7eb;--mut:#94a3b8;--line:#334155;--card:#1e293b;--acc:#60a5fa;--ok:#34d399;--warn:#fbbf24;--crit:#f87171}}
+:root[data-theme="dark"]{--bg:#0f172a;--fg:#e5e7eb;--mut:#94a3b8;--line:#334155;--card:#1e293b;--acc:#60a5fa;--ok:#34d399;--warn:#fbbf24;--crit:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:grid;grid-template-columns:220px 1fr;max-width:1200px;margin:0 auto}
+nav{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;overflow:auto;padding:24px 16px;border-right:1px solid var(--line);font-size:13px}
+nav a{display:block;padding:4px 0;color:var(--mut);text-decoration:none}nav a:hover{color:var(--acc)}
+main{padding:24px 32px;min-width:0}
+h1{margin:0 0 4px;font-size:26px}h2{margin:40px 0 12px;padding-top:12px;border-top:1px solid var(--line);font-size:20px}h3{margin:20px 0 8px;font-size:15px;color:var(--acc)}
+p{margin:6px 0}.sub{color:var(--mut);margin:0 0 16px}
+.badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--card)}
+.s{color:var(--ok)}.m{color:var(--warn)}.l{color:var(--crit)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}th{background:var(--card)}
+tr.crit td:first-child::before{content:"[CRIT] ";color:var(--crit);font-weight:700}
+pre.mermaid{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;text-align:center}
+.cap{color:var(--mut);font-size:12.5px;margin:-2px 0 14px;text-align:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.adr{border-left:4px solid var(--acc)}
+.new{color:var(--ok)}.chg{color:var(--warn)}
+code{background:var(--card);padding:1px 5px;border-radius:4px;font-size:13px}
+@media (max-width:800px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;border:0;border-bottom:1px solid var(--line)}.grid2{grid-template-columns:1fr}main{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <strong>{{FEATURE}}</strong>
+  <a href="#s1">1. Goals</a><a href="#s2">2. Constraints</a><a href="#s3">3. Context and design</a>
+  <a href="#s4">4. Detailed views</a><a href="#s5">5. Cross-cutting</a><a href="#s6">6. ADRs</a>
+  <a href="#s7">7. Risks and roadmap</a><a href="#tests">A. Test plan</a><a href="#tasks">B. Tasks</a><a href="#open">C. Open items</a>
+</nav>
+<main>
+<h1>{{FEATURE}}</h1>
+<p class="sub">Size <span class="badge {{s|m|l}}">{{S|M|L}}</span> · Ticket {{TICKET}} · Status {{Draft|Approved}} · {{DATE}}</p>
+
+<h2 id="s1">1. Introduction &amp; Goals</h2>
+<h3>Problem</h3><p>{{2-3 lines}}</p>
+<h3>Use cases</h3>
+<pre class="mermaid">{{use case flowchart}}</pre><p class="cap">{{caption}}</p>
+<div class="scroll"><table><tr><th>UC</th><th>Actor</th><th>Flow</th><th>Acceptance</th></tr>
+<tr><td>UC-1</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+<div class="grid2">
+  <div class="card"><strong>In scope</strong><ul><li>{{}}</li></ul></div>
+  <div class="card"><strong>Out of scope</strong><ul><li>{{}}</li></ul></div>
+</div>
+<h3>Quality attributes</h3>
+<div class="scroll"><table><tr><th>Attribute</th><th>Target</th><th>Verified by</th></tr><tr><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+
+<h2 id="s2">2. Constraints &amp; Assumptions</h2>
+<div class="scroll"><table><tr><th>Type</th><th>Constraint</th><th>Source</th><th>Impact</th></tr>
+<tr><td>Technical</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>Organizational</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+<p><strong>Assumptions:</strong> {{list, each with who confirms}}</p>
+
+<h2 id="s3">3. System Context &amp; High-Level Design</h2>
+<pre class="mermaid">{{context diagram}}</pre><p class="cap">{{caption}}</p>
+<pre class="mermaid">{{component map with new/changed/existing classDefs}}</pre><p class="cap"><span class="new">green = new</span> · <span class="chg">amber = changed</span> · gray = existing. Shape: {{modular monolith | ...}} (ADR-n)</p>
+
+<h2 id="s4">4. Detailed Views</h2>
+<h3>Building blocks (layers, ports and adapters)</h3>
+<pre class="mermaid">{{layer / ports-adapters diagram}}</pre><p class="cap">{{caption}}</p>
+<div class="scroll"><table><tr><th>Port</th><th>Direction</th><th>Adapter(s)</th><th>Fake</th></tr><tr><td>{{}}</td><td>{{driving|driven}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+<pre><code>{{folder tree, mark [new] / [changed]}}</code></pre>
+<h3>Runtime</h3>
+<pre class="mermaid">{{sequence diagram per main UC + failure path}}</pre><p class="cap">{{caption}}</p>
+<h3>Deployment</h3>
+<pre class="mermaid">{{deployment diagram or "Unchanged"}}</pre><p class="cap">{{caption}}</p>
+<h3>Data architecture</h3>
+<pre class="mermaid">{{ER diagram}}</pre><p class="cap">{{caption}}</p>
+<p><strong>Migration:</strong> {{expand → migrate → contract}} · <strong>Caching:</strong> {{layer, TTL, invalidation}}</p>
+
+<h2 id="s5">5. Cross-Cutting Concerns</h2>
+<div class="scroll"><table><tr><th>Concern</th><th>Decision</th><th>Where</th></tr>
+<tr><td>Security &amp; auth (RBAC)</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>Logging &amp; monitoring</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>Errors &amp; resilience</td><td>{{timeouts, retries, breakers, fallbacks}}</td><td>{{}}</td></tr></table></div>
+
+<h3>Failure modes</h3>
+<div class="scroll"><table><tr><th>Component / dependency</th><th>Failure</th><th>Detection</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+<h3>Operational complexity &amp; cost</h3>
+<div class="scroll"><table><tr><th>Item</th><th>Estimate</th><th>Owner</th></tr>
+<tr><td>Infra spend</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>New moving parts / on-call burden</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>Deploy &amp; rollback</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+
+<h2 id="s6">6. Architecture Decision Records</h2>
+<div class="card adr"><strong>ADR-1: {{title}}</strong> <span class="badge">{{proposed|accepted}}</span>
+<p><em>Context:</em> {{}} <em>Decision:</em> {{}}</p>
+<p><em>Options:</em> {{A: + / − / ops cost; B: + / − / ops cost}}</p>
+<p><em>Rejected:</em> {{A - why not; B - why not}}</p><p><em>Consequences:</em> + {{}} / − {{}} · <em>Revisit when:</em> {{trigger}}</p></div>
+
+<h2 id="s7">7. Risks, Technical Debt &amp; Roadmap</h2>
+<div class="scroll"><table><tr><th>Risk</th><th>L</th><th>I</th><th>Mitigation</th><th>Owner</th></tr><tr><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+<pre class="mermaid">{{gantt: MVP → post-launch}}</pre><p class="cap">{{caption}}</p>
+<p><strong>Deferred scale (not built now):</strong> {{item - revisit when ...}}</p>
+<p><strong>Tech-debt backlog:</strong> {{item - revisit when ...}}</p>
+
+<h2 id="tests">A. Test Plan</h2>
+<p class="sub">Rows marked <span class="badge" style="color:var(--crit)">CRIT</span> are blocking.</p>
+<div class="scroll"><table><tr><th>ID</th><th>Layer</th><th>UC</th><th>Case</th><th>Given / When / Then</th></tr>
+<tr class="crit"><td>UT-{{AREA}}-01</td><td>{{}}</td><td>UC-1</td><td>{{}}</td><td>{{}}</td></tr>
+<tr><td>UT-{{AREA}}-02</td><td>{{}}</td><td>UC-1</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+
+<h2 id="tasks">B. Tasks &amp; Traceability</h2>
+<div class="scroll"><table><tr><th>Task</th><th>Description</th><th>Files / modules</th><th>UC</th><th>Tests</th><th>Depends on</th></tr>
+<tr><td>T-1</td><td>{{}}</td><td>{{}}</td><td>UC-1</td><td>UT-{{}}-01</td><td>-</td></tr></table></div>
+<div class="scroll"><table><tr><th>UC</th><th>Components</th><th>Tests</th><th>Tasks</th></tr><tr><td>UC-1</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr></table></div>
+
+<h2 id="open">C. Open Questions &amp; Changelog</h2>
+<ul><li>{{open question or "None"}}</li></ul>
+<p class="sub">Stakeholder review: {{names / roles - approved on date}}</p>
+<p class="sub">Changelog: {{date - change}}</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "team-tools",
+  "owner": {
+    "name": "Your Name"
+  },
+  "plugins": [
+    {
+      "name": "architecture",
+      "source": "./plugins/architecture",
+      "description": "Feature architecture planning: multi-agent plan, HTML artifact, implementation and review"
+    }
+  ]
+}
